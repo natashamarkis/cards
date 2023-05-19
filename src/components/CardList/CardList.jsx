@@ -8,7 +8,7 @@ function CardList() {
     <div className="row my-5">
           {state.list.map((post) => (
             <div key={post.id} className="col-3">
-              <Card image={post.image} text={post.text} />
+              <Card image={post.image} text={post.text} id={post.id} />
             </div>
           ))}
         </div>
