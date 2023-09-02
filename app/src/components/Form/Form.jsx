@@ -1,26 +1,58 @@
 import React, { useContext, useState } from 'react';
 import { globalContext } from '../../contexts/globalContext';
+import { notification} from 'antd';
+import { useNavigate } from 'react-router-dom'
 
 function Form() {
   const { dispatch } = useContext(globalContext)
+  const navigate = useNavigate();
 
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
 
-  function handleSubmit(event) {
+  const openNotification = () => {
+    notification.open({
+      message: 'Notification Title',
+      description:
+        'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+      onClick: () => {
+        console.log('Notification Clicked!');
+      },
+    });
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    dispatch({
-      type: 'ADD_IMAGE',
-      payload: {
-        image,
-        text,
-        id: Date.now(),
-      }
+    const newImage = {
+      image,
+      text,
+      id: Date.now(),
+    }
+
+    const response = await fetch('http://localhost:4000/cards', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(newImage)
     })
 
-    setText('')
-    setImage('')
+    if(response.status === 200){
+      dispatch({
+        type: 'ADD_IMAGE',
+        payload: newImage
+      })
+
+      setText('')
+      setImage('')
+
+      openNotification()
+    } else {
+      navigate('/error')
+    }
+
+    
   }
 
 
