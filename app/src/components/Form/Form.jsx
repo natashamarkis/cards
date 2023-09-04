@@ -1,23 +1,21 @@
-import React, { useContext, useState } from 'react';
-import { globalContext } from '../../contexts/globalContext';
+import React, { useState } from 'react';
 import { notification} from 'antd';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import  {useDispatch} from 'react-redux'
+import { addImage } from '../../redux/actions/list.actions';
 
 function Form() {
-  const { dispatch } = useContext(globalContext)
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
 
   const openNotification = () => {
     notification.open({
-      message: 'Notification Title',
+      message: 'OK',
       description:
-        'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-      onClick: () => {
-        console.log('Notification Clicked!');
-      },
+        'Good',
     });
   }
 
@@ -39,10 +37,7 @@ function Form() {
     })
 
     if(response.status === 200){
-      dispatch({
-        type: 'ADD_IMAGE',
-        payload: newImage
-      })
+      dispatch(addImage(newImage))
 
       setText('')
       setImage('')
@@ -51,10 +46,7 @@ function Form() {
     } else {
       navigate('/error')
     }
-
-    
   }
-
 
   return (
     <form className="mb-3" onSubmit={handleSubmit}>

@@ -1,29 +1,39 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'
-import { globalContext } from '../../contexts/globalContext';
-
+import  {useDispatch, useSelector} from 'react-redux'
+import { editCard } from '../../redux/actions/list.actions';
 
 function Edit() {
   const navigate = useNavigate();
-  const { state, dispatch } = useContext(globalContext)
+
+  const list = useSelector((state) => state.list)
+  const dispatch = useDispatch()
 
   const { id } = useParams()
-  const currentCard = state.list.find(el => el.id === +id)
+  const currentCard = list?.find(el => el.id === +id)
 
   const [newText, setNewText] = useState(currentCard.text)
 
-  function handleSubmit(event){
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
-    dispatch({
-      type: 'EDIT_CARD',
-      payload: {
-        text: newText,
-        id: +id
-      }
+    const newData = {
+      text: newText,
+      id: +id
+    }
+    
+    const response = await fetch('http://localhost:4000/cards', {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify(newData)
     })
 
-    navigate('/cards')
+    if(response.status === 200){
+      dispatch(editCard(newData))
+      navigate('/cards')
+    }
   }
 
   return (

@@ -1,19 +1,35 @@
-import React, { useContext } from "react";
-import { Link } from 'react-router-dom';
-import { globalContext } from "../../contexts/globalContext";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Button, notification } from "antd";
+import { deleteCard } from "../../redux/actions/list.actions";
+import { addToFavourite } from "../../redux/actions/favourites.action";
 
-function Card({image, text, id}) {
-  const { dispatch } = useContext(globalContext)
+function Card({ image, text, id }) {
+  const dispatch = useDispatch();
 
-function deleteCard(e){
-  dispatch({
-    type: 'DELETE_CARD',
-    payload: {
-      id: e
+  const openNotification = (status, text) => {
+    notification.open({
+      message: { status },
+      description: { text },
+    });
+  };
+
+  const handleDeleteCard = async (e) => {
+    const response = await fetch(`http://localhost:4000/cards/${e}`, {
+      method: "DELETE",
+    });
+
+    if (response.status === 200) {
+      dispatch(deleteCard(+e));
+    } else {
+      openNotification(response.status, "Error");
     }
-  })
-  
-}
+  };
+
+  const handleFavourite = (id) => {
+    dispatch(addToFavourite(id))
+  }
 
   return (
     <div className="card">
@@ -21,16 +37,37 @@ function deleteCard(e){
       <div className="card-body">
         <h5 className="card-title">{text}</h5>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '20px'}}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          marginBottom: "20px",
+        }}
+      >
         <Link to={`/edit/${id}`}>
-          <button type="button" className="btn btn-primary" style={{width: '100px'}}>Edit</button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ width: "100px" }}
+          >
+            Edit
+          </button>
         </Link>
-        <button 
-          type="button" 
-          className="btn btn-danger" 
-          style={{width: '100px'}}
-          onClick={_ => deleteCard(id)}
-        >Delete</button>
+        <button
+          type="button"
+          className="btn btn-danger"
+          style={{ width: "100px" }}
+          onClick={(_) => handleDeleteCard(id)}
+        >
+          Delete
+        </button>
+        <Button
+          type="button"
+          style={{ width: "50px" }}
+          onClick={(_) => handleFavourite(id)}
+        >
+          💙
+        </Button>
       </div>
     </div>
   );

@@ -14,9 +14,9 @@ function Nav() {
             <Link to='/cards' className="nav-link">
               Cards
             </Link>
-            {/* <Link to='/edit' className="nav-link">
-              Edit
-            </Link> */}
+            <Link to='/favourites' className="nav-link">
+              Favourites
+            </Link>
           </div>
         </div>
     </nav>
