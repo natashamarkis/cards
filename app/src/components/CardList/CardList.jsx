@@ -9,7 +9,7 @@ function CardList() {
     <div className="row my-5">
         {list.map((post) => (
           <div key={post.id} className="col-3">
-            <Card image={post.image} text={post.text} id={post.id} />
+            <Card {...post}/>
           </div>
         ))}
     </div>

@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Button, notification } from "antd";
 import { deleteCard } from "../../redux/actions/list.actions";
-import { addToFavourite } from "../../redux/actions/favourites.action";
+import { addToFavourite, deleteFavourite } from "../../redux/actions/favourites.action";
+import  {useSelector} from 'react-redux'
 
 function Card({ image, text, id }) {
   const dispatch = useDispatch();
+  const {favourites} = useSelector(state => state)
 
   const openNotification = (status, text) => {
     notification.open({
@@ -28,7 +30,11 @@ function Card({ image, text, id }) {
   };
 
   const handleFavourite = (id) => {
-    dispatch(addToFavourite(id))
+    if(favourites.includes(id)){
+      dispatch(deleteFavourite(id))
+    } else {
+      dispatch(addToFavourite(id))
+    }
   }
 
   return (
@@ -66,7 +72,7 @@ function Card({ image, text, id }) {
           style={{ width: "50px" }}
           onClick={(_) => handleFavourite(id)}
         >
-          💙
+          {favourites.includes(id) ? '❤️' : '💙'}
         </Button>
       </div>
     </div>

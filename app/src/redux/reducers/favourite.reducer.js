@@ -1,4 +1,4 @@
-import { ADD_FAVOURITE } from "../types"
+import { ADD_FAVOURITE, DELETE_FAVOURITE } from "../types"
 
 export function favouriteReducer(state = [], action){ 
   const {type} = action
@@ -6,6 +6,11 @@ export function favouriteReducer(state = [], action){
     case ADD_FAVOURITE: {
       const { id } = action.payload
       return [...state, +id]
+    }
+    case DELETE_FAVOURITE: {
+      const { id } = action.payload
+      const newList = [...state].filter(el => el !== +id)
+      return [...newList]
     }
     default: {
       return state
